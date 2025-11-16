@@ -9,7 +9,7 @@
             </h1>
           </div>
           <div class="flex space-x-8 overflow-x-auto py-4">
-            <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+            <Link :href="route('consignments')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
               Consignments
             </Link>
             <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">

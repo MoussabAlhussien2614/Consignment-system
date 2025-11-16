@@ -61,7 +61,6 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-    // dashboard sample (محمي بالـ auth middleware)
     public function dashboard()
     {
         return Inertia::render('Dashboard', [

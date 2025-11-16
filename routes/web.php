@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConsignmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,4 +20,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
+});
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get("/consignments",[ConsignmentController::class,"index"])->name("consignments");
 });
