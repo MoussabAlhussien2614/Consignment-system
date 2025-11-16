@@ -54,29 +54,59 @@
 
         <!-- Items Card -->
         <div v-if="consignment.items && consignment.items.length > 0" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Items ({{ consignment.items.length }})</h3>
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Consignment Items ({{ consignment.items.length }})</h3>
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Available</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unit Price</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Extra Expenses</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Commission Rate</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="item in consignment.items" :key="item.id">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ item.product?.name || '-' }}
-                  </td>
+                <tr v-for="item in consignment.items" :key="item.id" class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.name || '-' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.sku || '-' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.category?.name || '-' }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.quantity }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.available_quantity }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ parseFloat(item.unit_price || 0).toFixed(2) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ parseFloat(item.extra_expences || 0).toFixed(2) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.commission_rate }}%</td>
                 </tr>
               </tbody>
             </table>
           </div>
+        </div>
+
+        <!-- Vehicles Data Table -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Vehicles ({{ vehicles?.length || 0 }})</h3>
+          <DataTable
+            :columns="vehicleColumns"
+            :data="vehicles || []"
+            :searchable="false"
+            :show-create-button="false"
+            :show-actions="false"
+            empty-message="No vehicles found"
+          />
+        </div>
+
+        <!-- Vendors Data Table -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Vendors ({{ vendors?.length || 0 }})</h3>
+          <DataTable
+            :columns="vendorColumns"
+            :data="vendors || []"
+            :searchable="false"
+            :show-create-button="false"
+            :show-actions="false"
+            empty-message="No vendors found"
+          />
         </div>
       </div>
     </div>
@@ -86,6 +116,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
 import Navbar from '../Navbar.vue'
+import DataTable from '../../Components/DataTable.vue'
 import { route } from '../../helpers/route.js'
 
 defineProps({
@@ -93,11 +124,71 @@ defineProps({
     type: Object,
     required: true,
   },
+  vehicles: {
+    type: Array,
+    default: () => [],
+  },
+  vendors: {
+    type: Array,
+    default: () => [],
+  },
   user: {
     type: Object,
     required: true,
   },
 })
+
+const vehicleColumns = [
+  {
+    key: 'plate_number',
+    label: 'Plate Number',
+  },
+  {
+    key: 'driver_name',
+    label: 'Driver Name',
+    defaultValue: '-',
+  },
+  {
+    key: 'driver_phone',
+    label: 'Driver Phone',
+    defaultValue: '-',
+  },
+  {
+    key: 'vehicle_type',
+    label: 'Type',
+    defaultValue: '-',
+  },
+  {
+    key: 'vendor.name',
+    label: 'Vendor',
+  },
+]
+
+const vendorColumns = [
+  {
+    key: 'name',
+    label: 'Name',
+  },
+  {
+    key: 'code',
+    label: 'Code',
+  },
+  {
+    key: 'contact_name',
+    label: 'Contact Name',
+    defaultValue: '-',
+  },
+  {
+    key: 'contact_phone',
+    label: 'Contact Phone',
+    defaultValue: '-',
+  },
+  {
+    key: 'email',
+    label: 'Email',
+    defaultValue: '-',
+  },
+]
 
 function formatStatus(status) {
   const statusMap = {

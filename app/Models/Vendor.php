@@ -17,16 +17,21 @@ class Vendor extends Model
         'contact_phone',
         'email',
         'address',
-        'notes'
+        'notes',
     ];
 
-    public function vehicles(){
+    public function vehicles()
+    {
         return $this->hasMany(Vehicle::class);
     }
 
-    public function consignments(){
+    public function consignments()
+    {
         return $this->hasMany(Consignment::class);
     }
 
-    
+    public function invoices()
+    {
+        return $this->hasManyThrough(Invoice::class, Vehicle::class);
+    }
 }

@@ -41,16 +41,26 @@ class ConsignmentController extends Controller
     {
         $vendors = Vendor::orderBy('name')->get(['id', 'name']);
         $vehicles = Vehicle::orderBy('plate_number')->get(['id', 'plate_number', 'vendor_id']);
+        $categories = \App\Models\Category::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Consignments/Create', [
             'vendors' => $vendors,
             'vehicles' => $vehicles,
+            'categories' => $categories,
         ]);
     }
 
     public function store(StoreConsignmentRequest $request)
     {
-        Consignment::create($request->validated());
+        $validated = $request->validated();
+        $items = $validated['items'];
+        unset($validated['items']);
+
+        $consignment = Consignment::create($validated);
+
+        foreach ($items as $item) {
+            $consignment->items()->create($item);
+        }
 
         return redirect()->route('consignments.index')
             ->with('success', 'Consignment created successfully.');
@@ -58,28 +68,52 @@ class ConsignmentController extends Controller
 
     public function show(Consignment $consignment)
     {
-        $consignment->load(['vendor', 'vehicle', 'items.product']);
+        $consignment->load(['vendor', 'vehicle', 'items.category']);
+
+        // Get all vehicles for this consignment's vendor
+        $vehicles = Vehicle::where('vendor_id', $consignment->vendor_id)
+            ->with('vendor')
+            ->orderBy('plate_number')
+            ->get();
+
+        // Get all vendors (for the data table)
+        $vendors = Vendor::orderBy('name')->get();
 
         return Inertia::render('Consignments/Show', [
             'consignment' => $consignment,
+            'vehicles' => $vehicles,
+            'vendors' => $vendors,
         ]);
     }
 
     public function edit(Consignment $consignment)
     {
+        $consignment->load(['items.category']);
         $vendors = Vendor::orderBy('name')->get(['id', 'name']);
         $vehicles = Vehicle::orderBy('plate_number')->get(['id', 'plate_number', 'vendor_id']);
+        $categories = \App\Models\Category::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Consignments/Edit', [
             'consignment' => $consignment,
             'vendors' => $vendors,
             'vehicles' => $vehicles,
+            'categories' => $categories,
         ]);
     }
 
     public function update(UpdateConsignmentRequest $request, Consignment $consignment)
     {
-        $consignment->update($request->validated());
+        $validated = $request->validated();
+        $items = $validated['items'];
+        unset($validated['items']);
+
+        $consignment->update($validated);
+
+        // Delete existing items and create new ones
+        $consignment->items()->delete();
+        foreach ($items as $item) {
+            $consignment->items()->create($item);
+        }
 
         return redirect()->route('consignments.index')
             ->with('success', 'Consignment updated successfully.');

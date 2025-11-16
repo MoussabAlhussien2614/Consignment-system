@@ -12,19 +12,31 @@ class ConsignmentItem extends Model
 
     protected $fillable = [
         'consignment_id',
-        'product_id',
+        'name',
+        'sku',
+        'category_id',
         'quantity',
-        'available_quantity',
         'unit_price',
-        'notes'
+        'extra_expences',
+        'commission_rate',
+        'notes',
     ];
 
-    public function consignment(){
+    protected function casts(): array
+    {
+        return [
+            'unit_price' => 'decimal:2',
+            'extra_expences' => 'decimal:2',
+        ];
+    }
+
+    public function consignment()
+    {
         return $this->belongsTo(Consignment::class);
     }
 
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
-
 }
