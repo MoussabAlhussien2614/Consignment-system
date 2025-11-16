@@ -21,13 +21,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
-
-    // Vendors
+    Route::get("/consignments",[ConsignmentController::class,"index"])->name("consignments");
     Route::resource('vendors', VendorController::class);
 });
 
 
-
-Route::middleware('auth')->group(function () {
-    Route::get("/consignments",[ConsignmentController::class,"index"])->name("consignments");
-});
