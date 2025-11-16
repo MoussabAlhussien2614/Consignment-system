@@ -5,6 +5,7 @@ export function route(name, params = {}) {
     'register': '/register',
     'logout': '/logout',
     'dashboard': '/dashboard',
+    'consignments': '/consignments',
   }
 
   let url = routes[name] || '/'

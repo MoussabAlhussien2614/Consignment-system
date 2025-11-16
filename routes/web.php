@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\VendorController;
+use App\Http\Controllers\ConsignmentController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VendorController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,4 +24,10 @@ Route::middleware('auth')->group(function () {
 
     // // Vendors
     // Route::resource('vendors', VendorController::class);
+});
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get("/consignments",[ConsignmentController::class,"index"])->name("consignments");
 });
