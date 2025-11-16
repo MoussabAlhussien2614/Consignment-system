@@ -3,11 +3,20 @@
     <header class="bg-white shadow-sm border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-          <div class="flex items-center">
+          <div class="flex items-.">
             <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Consignment System
             </h1>
           </div>
+        <nav >
+          <div class="flex space-x-8 overflow-x-auto py-4">
+            <a>Consignments</a>
+            <a>Vendors</a>
+            <a>Sales</a>
+            <a>Reports</a>
+          </div>
+        </nav>
+
           <div class="flex items-center gap-4">
             <!-- <div class="text-right">
               <p class="text-sm font-medium text-gray-900">{{ user.name }}</p>
@@ -26,6 +35,8 @@
             </form>
           </div>
         </div>
+
+ 
       </div>
     </header>
     <slot></slot>
