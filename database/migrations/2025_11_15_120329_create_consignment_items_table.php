@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('consignment_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('consignment_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
             $table->string('sku')->nullable()->unique();
             $table->foreignId('category_id')->constrained("categories")->cascadeOnDelete();
             $table->integer('quantity')->unsigned();
