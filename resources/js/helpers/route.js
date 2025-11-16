@@ -5,7 +5,6 @@ export function route(name, params = {}) {
     'register': '/register',
     'logout': '/logout',
     'dashboard': '/dashboard',
-    'consignments': '/consignments',
     'vendors.index': '/vendors',
     'vendors.create': '/vendors/create',
     'vendors.show': '/vendors/:vendor',
