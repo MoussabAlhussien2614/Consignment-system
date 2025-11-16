@@ -8,14 +8,21 @@
               Consignment System
             </h1>
           </div>
-        <nav >
           <div class="flex space-x-8 overflow-x-auto py-4">
-            <a>Consignments</a>
-            <a>Vendors</a>
-            <a>Sales</a>
-            <a>Reports</a>
+            <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+              Consignments
+            </Link>
+            <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+              Vendors 
+            </Link>
+            <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+              Sales
+            </Link>
+            <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+              Reports
+            </Link>
+     
           </div>
-        </nav>
 
           <div class="flex items-center gap-4">
             <!-- <div class="text-right">
@@ -45,7 +52,8 @@
 </template>
 
 <script setup>
-import { router } from '@inertiajs/vue3'
+import { router, Link } from '@inertiajs/vue3'
+import { route } from '../helpers/route.js'
 
 defineProps({
   user: {
