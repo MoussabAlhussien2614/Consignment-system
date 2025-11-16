@@ -25,7 +25,7 @@ class StoreConsignmentRequest extends FormRequest
             'vendor_id' => ['required', 'exists:vendors,id'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
             'reference_no' => ['required', 'string', 'max:255', 'unique:consignments,reference_no'],
-            'delivered_at' => ['nullable', 'date'],
+            'delivered_at' => ['nullable', 'date', 'before_or_equal:now'],
             'status' => ['required', 'in:pending,in_progress,closed'],
             'notes' => ['nullable', 'string'],
         ];
