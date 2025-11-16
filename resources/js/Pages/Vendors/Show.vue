@@ -84,6 +84,19 @@
             <p v-else class="text-gray-500">No consignments</p>
           </div>
         </div>
+
+        <!-- Invoices Data Table -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Invoices ({{ invoices?.length || 0 }})</h3>
+          <DataTable
+            :columns="invoiceColumns"
+            :data="invoices || []"
+            :searchable="false"
+            :show-create-button="false"
+            :show-actions="false"
+            empty-message="No invoices found"
+          />
+        </div>
       </div>
     </div>
   </Navbar>
@@ -92,6 +105,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
 import Navbar from '../Navbar.vue'
+import DataTable from '../../Components/DataTable.vue'
 import { route } from '../../helpers/route.js'
 
 defineProps({
@@ -99,11 +113,52 @@ defineProps({
     type: Object,
     required: true,
   },
+  invoices: {
+    type: Array,
+    default: () => [],
+  },
   user: {
     type: Object,
     required: true,
   },
 })
+
+const invoiceColumns = [
+  {
+    key: 'id',
+    label: 'Invoice ID',
+  },
+  {
+    key: 'vehicle.plate_number',
+    label: 'Vehicle',
+    defaultValue: '-',
+  },
+  {
+    key: 'total_sales',
+    label: 'Total Sales',
+    format: 'currency',
+  },
+  {
+    key: 'commission_deduction',
+    label: 'Commission Deduction',
+    format: 'currency',
+  },
+  {
+    key: 'expenses_deduction',
+    label: 'Expenses Deduction',
+    format: 'currency',
+  },
+  {
+    key: 'net_amount_payable',
+    label: 'Net Amount Payable',
+    format: 'currency',
+  },
+  {
+    key: 'created_at',
+    label: 'Created At',
+    defaultValue: '-',
+  },
+]
 </script>
 
 <style scoped>

@@ -29,6 +29,15 @@ class UpdateConsignmentRequest extends FormRequest
             'delivered_at' => ['nullable', 'date', 'before_or_equal:now'],
             'status' => ['required', 'in:pending,in_progress,closed'],
             'notes' => ['nullable', 'string'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.name' => ['required', 'string', 'max:255'],
+            'items.*.sku' => ['nullable', 'string', 'max:255'],
+            'items.*.category_id' => ['required', 'exists:categories,id'],
+            'items.*.quantity' => ['required', 'integer', 'min:1'],
+            'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+            'items.*.extra_expences' => ['nullable', 'numeric', 'min:0'],
+            'items.*.commission_rate' => ['required', 'integer', 'min:0', 'max:100'],
+            'items.*.notes' => ['nullable', 'string'],
         ];
     }
 }

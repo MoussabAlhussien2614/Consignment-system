@@ -48,9 +48,11 @@ class VendorController extends Controller
     public function show(Vendor $vendor)
     {
         $vendor->load(['vehicles', 'consignments']);
+        $invoices = $vendor->invoices()->with('vehicle')->latest()->get();
 
         return Inertia::render('Vendors/Show', [
             'vendor' => $vendor,
+            'invoices' => $invoices,
         ]);
     }
 
