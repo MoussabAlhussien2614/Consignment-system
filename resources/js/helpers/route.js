@@ -6,6 +6,13 @@ export function route(name, params = {}) {
     'logout': '/logout',
     'dashboard': '/dashboard',
     'consignments': '/consignments',
+    'vendors.index': '/vendors',
+    'vendors.create': '/vendors/create',
+    'vendors.show': '/vendors/:vendor',
+    'vendors.edit': '/vendors/:vendor/edit',
+    'vendors.store': '/vendors',
+    'vendors.update': '/vendors/:vendor',
+    'vendors.destroy': '/vendors/:vendor',
   }
 
   let url = routes[name] || '/'
