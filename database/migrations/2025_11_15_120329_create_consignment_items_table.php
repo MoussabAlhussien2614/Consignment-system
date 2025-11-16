@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('consignment_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('consignment_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('sku')->nullable()->unique();
+            $table->foreignId('category_id')->constrained("categories")->cascadeOnDelete();
             $table->integer('quantity')->unsigned();
-            $table->integer('available_quantity')->unsigned();
             $table->decimal('unit_price',15,2);
+            $table->decimal('extra_expences',15,2);
+            $table->unsignedInteger("commission_rate");
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
