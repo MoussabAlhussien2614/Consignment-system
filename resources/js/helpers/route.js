@@ -13,6 +13,7 @@ export function route(name, params = {}) {
     'vendors.store': '/vendors',
     'vendors.update': '/vendors/:vendor',
     'vendors.destroy': '/vendors/:vendor',
+    'invoices': '/invoices',
   }
 
   let url = routes[name] || '/'

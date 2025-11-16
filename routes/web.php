@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConsignmentController;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VendorController;
 
@@ -21,8 +22,19 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
-    Route::get("/consignments",[ConsignmentController::class,"index"])->name("consignments");
     Route::resource('vendors', VendorController::class);
 });
 
 
+
+Route::middleware('auth')->prefix("consignments")->group(function () {
+    Route::get('/', [ConsignmentController::class, 'index'])->name('consignments');
+
+});
+
+
+
+Route::middleware('auth')->prefix("invoices")->group(function () {
+    Route::get('/', [InvoiceController::class, 'index'])->name('invoices');
+
+});

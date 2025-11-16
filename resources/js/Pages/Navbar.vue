@@ -20,8 +20,8 @@
             <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
               Sales
             </Link>
-            <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-              Reports
+            <Link :href="route('invoices')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+              Invoices
             </Link>
      
           </div>
