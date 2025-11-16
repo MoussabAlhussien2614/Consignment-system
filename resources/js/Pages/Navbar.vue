@@ -11,19 +11,24 @@
             </Link>
           </div>
           <div class="flex space-x-8 overflow-x-auto py-4">
-            <Link :href="route('consignments')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+            <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+              Dashboard
+            </Link>
+            <Link :href="route('consignments.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
               Consignments
             </Link>
             <Link :href="route('vendors.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-              Vendors 
+              Vendors
             </Link>
-            <Link :href="route('dashboard')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-              Sales
+            <Link :href="route('vehicles.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+              Vehicles
             </Link>
             <Link :href="route('invoices')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
               Invoices
             </Link>
-     
+            <Link :href="route('categories.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+              Categories
+            </Link>
           </div>
 
           <div class="flex items-center gap-4">

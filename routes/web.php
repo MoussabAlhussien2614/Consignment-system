@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
@@ -23,14 +25,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
     Route::resource('vendors', VendorController::class);
+    // Vehicles
+    Route::resource('vehicles', VehicleController::class);
+    // Categories
+    Route::resource('categories', CategoryController::class);
+    // Consignments
+    Route::resource('consignments', ConsignmentController::class);
 });
 
-
-
-Route::middleware('auth')->prefix("consignments")->group(function () {
-    Route::get('/', [ConsignmentController::class, 'index'])->name('consignments');
-
-});
 
 
 

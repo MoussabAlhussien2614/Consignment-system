@@ -23,8 +23,8 @@ class ConsignmentItem extends Model
         return $this->belongsTo(Consignment::class);
     }
 
-    public function product(){
-        return $this->belongsTo(Product::class);
+    public function category(){
+        return $this->belongsTo(Category::class);
     }
 
 }
