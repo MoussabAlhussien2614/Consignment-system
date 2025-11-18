@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreConsignmentRequest;
 use App\Http\Requests\UpdateConsignmentRequest;
 use App\Models\Consignment;
+use App\Models\Sale;
 use App\Models\Vehicle;
 use App\Models\Vendor;
+use Barryvdh\DomPDF\Facade\Pdf as DomPdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -125,5 +127,17 @@ class ConsignmentController extends Controller
 
         return redirect()->route('consignments.index')
             ->with('success', 'Consignment deleted successfully.');
+    }
+
+
+    public function receipt(Sale $sale)
+    {
+        $sale->load(['item.consignment.vendor', 'item.consignment.vehicle', 'item.category']);
+
+        $pdf = Dompdf::loadView('pdfs.receipt', [
+            'sale' => $sale,
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->download("receipt-{$sale->id}.pdf");
     }
 }
