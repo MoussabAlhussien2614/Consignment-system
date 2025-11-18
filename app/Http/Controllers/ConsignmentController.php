@@ -42,7 +42,7 @@ class ConsignmentController extends Controller
     public function create()
     {
         $vendors = Vendor::orderBy('name')->get(['id', 'name']);
-        $vehicles = Vehicle::orderBy('plate_number')->get(['id', 'plate_number', 'vendor_id']);
+        $vehicles = Vehicle::with('vendor')->orderBy('plate_number')->get(['id', 'plate_number', 'vendor_id']);
         $categories = \App\Models\Category::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Consignments/Create', [

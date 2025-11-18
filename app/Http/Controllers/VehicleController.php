@@ -46,7 +46,12 @@ class VehicleController extends Controller
 
     public function store(StoreVehicleRequest $request)
     {
-        Vehicle::create($request->validated());
+        $vehicle = Vehicle::create($request->validated());
+        $vehicle->load('vendor');
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json($vehicle, 201);
+        }
 
         return redirect()->route('vehicles.index')
             ->with('success', 'Vehicle created successfully.');

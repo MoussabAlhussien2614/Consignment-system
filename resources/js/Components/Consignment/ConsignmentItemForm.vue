@@ -40,6 +40,7 @@
         placeholder="Select category"
         :error="getError('category_id')"
         required
+        @add-new="handleAddNewCategory"
       />
 
       <FormInput
@@ -124,7 +125,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'remove'])
+const emit = defineEmits(['update:modelValue', 'remove', 'open-add-category-modal'])
 
 const itemData = computed({
   get: () => props.modelValue,
@@ -132,11 +133,14 @@ const itemData = computed({
 })
 
 const categoryOptions = computed(() => {
-  return props.categories.map(category => ({
-    value: category.id,
-    label: category.name,
-  }))
+  const base = props.categories.map(c => ({ value: c.id, label: c.name }))
+  base.push({ value: 'add_new_category', label: '+ Add New Category' })
+  return base
 })
+
+function handleAddNewCategory() {
+  emit('open-add-category-modal', { index: props.index })
+}
 
 function getError(field) {
   const errorKey = `items.${props.index}.${field}`

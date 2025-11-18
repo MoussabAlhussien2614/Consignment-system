@@ -2,7 +2,7 @@
   <Navbar :user="user">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="space-y-6">
-        <!-- Page Header -->
+        
         <div>
           <Link :href="route('consignments.index')" class="text-indigo-600 hover:text-indigo-800 mb-4 inline-flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -14,7 +14,7 @@
           <p class="text-gray-600 mt-1">Add a new consignment to the system</p>
         </div>
 
-        <!-- Form Card -->
+        
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <form @submit.prevent="submit" class="space-y-5">
             <FormInput
@@ -34,6 +34,7 @@
               placeholder="Select a vendor"
               :error="form.errors.vendor_id"
               required
+              @add-new="openVendorModal"
             />
 
             <FormSelect
@@ -44,6 +45,7 @@
               placeholder="Select a vehicle"
               :error="form.errors.vehicle_id"
               required
+              @add-new="openVehicleModal"
             />
 
             <FormInput
@@ -74,7 +76,7 @@
               :rows="3"
             />
 
-            <!-- Consignment Items Section -->
+            
             <div class="pt-6 border-t border-gray-200">
               <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-900">Consignment Items</h2>
@@ -106,10 +108,11 @@
                   :key="index"
                   v-model="form.items[index]"
                   :index="index"
-                  :categories="categories"
+                  :categories="localCategories"
                   :errors="form.errors"
                   :removable="form.items.length > 1"
                   @remove="removeItem(index)"
+                  @open-add-category-modal="openCategoryModal"
                 />
               </div>
             </div>
@@ -133,18 +136,47 @@
           </form>
         </div>
       </div>
+
+      <QuickCreateModal
+        :is-open="vendorModalOpen"
+        title="Add New Vendor"
+        :fields="vendorFields"
+        :store-url="route('vendors.store')"
+        @close="vendorModalOpen = false"
+        @created="handleVendorCreated"
+      />
+
+      <QuickCreateModal
+        :is-open="vehicleModalOpen"
+        title="Add New Vehicle"
+        :fields="vehicleFields"
+        :store-url="route('vehicles.store')"
+        :initial-data="{ vendor_id: form.vendor_id || '' }"
+        @close="vehicleModalOpen = false"
+        @created="handleVehicleCreated"
+      />
+
+      <QuickCreateModal
+        :is-open="categoryModalOpen"
+        title="Add New Category"
+        :fields="categoryFields"
+        :store-url="route('categories.store')"
+        @close="categoryModalOpen = false"
+        @created="handleCategoryCreated"
+      />
     </div>
   </Navbar>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useForm, Link } from '@inertiajs/vue3'
 import Navbar from '../Navbar.vue'
 import FormInput from '../../Components/FormInput.vue'
 import FormTextarea from '../../Components/FormTextarea.vue'
 import FormSelect from '../../Components/FormSelect.vue'
 import ConsignmentItemForm from '../../Components/Consignment/ConsignmentItemForm.vue'
+import QuickCreateModal from '../../Components/QuickCreateModal.vue'
 import { route } from '../../helpers/route.js'
 
 const props = defineProps({
@@ -166,19 +198,28 @@ const props = defineProps({
   },
 })
 
-const vendorOptions = computed(() => {
-  return props.vendors.map(vendor => ({
-    value: vendor.id,
-    label: vendor.name,
-  }))
-})
+const localVendors = ref([...props.vendors])
+const localVehicles = ref([...props.vehicles])
+const localCategories = ref([...props.categories])
 
-const vehicleOptions = computed(() => {
-  return props.vehicles.map(vehicle => ({
-    value: vehicle.id,
-    label: `${vehicle.plate_number}${vehicle.vendor_id ? ` (${vehicle.vendor_id})` : ''}`,
-  }))
-})
+const vendorModalOpen = ref(false)
+const vehicleModalOpen = ref(false)
+const categoryModalOpen = ref(false)
+const categoryModalItemIndex = ref(null)
+
+const vendorOptions = computed(() => [
+  ...localVendors.value.map(v => ({ value: v.id, label: v.name })),
+  { value: 'add_new_vendor', label: '+ Add New Vendor' }
+])
+
+const vehicleOptions = computed(() => [
+  ...localVehicles.value.map(v => ({ 
+    value: v.id, 
+    label: `${v.plate_number}${v.vendor?.name ? ` (${v.vendor.name})` : ''}` 
+  })),
+  { value: 'add_new_vehicle', label: '+ Add New Vehicle' }
+])
+
 
 const todayMax = computed(() => {
   const now = new Date()
@@ -231,6 +272,79 @@ function removeItem(index) {
 function submit() {
   form.post(route('consignments.store'))
 }
+
+function openVendorModal() {
+  vendorModalOpen.value = true
+}
+
+function openVehicleModal() {
+  vehicleModalOpen.value = true
+}
+
+function openCategoryModal({ index }) {
+  categoryModalItemIndex.value = index
+  categoryModalOpen.value = true
+}
+
+function handleVendorCreated(vendor) {
+  localVendors.value.push(vendor)
+  form.vendor_id = vendor.id
+  vendorModalOpen.value = false
+}
+
+function handleVehicleCreated(vehicle) {
+  localVehicles.value.push(vehicle)
+  form.vehicle_id = vehicle.id
+  vehicleModalOpen.value = false
+}
+
+function handleCategoryCreated(category) {
+  localCategories.value.push(category)
+  if (categoryModalItemIndex.value !== null) {
+    form.items[categoryModalItemIndex.value].category_id = category.id
+  }
+  categoryModalItemIndex.value = null
+  categoryModalOpen.value = false
+}
+
+const vendorFields = [
+  { name: 'name', label: 'Vendor Name', placeholder: 'Enter vendor name', required: true },
+  { name: 'code', label: 'Vendor Code', placeholder: 'Enter vendor code', required: true },
+  { name: 'contact_name', label: 'Contact Name', placeholder: 'Enter contact name' },
+  { name: 'contact_phone', label: 'Contact Phone', placeholder: 'Enter contact phone' },
+  { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter email' },
+  { name: 'address', label: 'Address', type: 'textarea', placeholder: 'Enter address' },
+]
+
+const vehicleFields = computed(() => [
+  { 
+    name: 'vendor_id', 
+    label: 'Vendor', 
+    type: 'select',
+    options: localVendors.value.map(v => ({ value: v.id, label: v.name })),
+    required: true 
+  },
+  { name: 'plate_number', label: 'Plate Number', placeholder: 'Enter plate number', required: true },
+  { name: 'driver_name', label: 'Driver Name', placeholder: 'Enter driver name' },
+  { name: 'driver_phone', label: 'Driver Phone', placeholder: 'Enter driver phone' },
+  { 
+    name: 'vehicle_type', 
+    label: 'Vehicle Type', 
+    type: 'select',
+    options: [
+      { value: 'car', label: 'Car' },
+      { value: 'truck', label: 'Truck' },
+      { value: 'van', label: 'Van' },
+      { value: 'other', label: 'Other' },
+    ],
+    required: true 
+  },
+  { name: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Enter notes' },
+])
+
+const categoryFields = [
+  { name: 'name', label: 'Category Name', placeholder: 'Enter category name', required: true },
+]
 </script>
 
 <style scoped>
