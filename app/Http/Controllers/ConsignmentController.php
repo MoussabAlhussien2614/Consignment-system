@@ -111,8 +111,7 @@ class ConsignmentController extends Controller
 
         $consignment->update($validated);
 
-        // Delete existing items and create new ones
-        $consignment->items()->delete();
+        $consignment->items()->forceDelete();
         foreach ($items as $item) {
             $consignment->items()->create($item);
         }
@@ -128,7 +127,6 @@ class ConsignmentController extends Controller
         return redirect()->route('consignments.index')
             ->with('success', 'Consignment deleted successfully.');
     }
-
 
     public function receipt(Sale $sale)
     {
