@@ -34,6 +34,15 @@ export function route(name, params = {}) {
     'consignments.store': '/consignments',
     'consignments.update': '/consignments/:consignment',
     'consignments.destroy': '/consignments/:consignment',
+    'sales.index': '/sales',
+    'sales.create': '/sales/create',
+    'sales.show': '/sales/:sale',
+    'sales.edit': '/sales/:sale/edit',
+    'sales.store': '/sales',
+    'sales.update': '/sales/:sale',
+    'sales.destroy': '/sales/:sale',
+    'sales.receipt': '/sales/:sale/receipt',
+    'vehicles.invoice': '/vehicles/:vehicle/invoice',
   }
 
   let url = routes[name] || '/'

@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\Models\Sale;
+use App\Models\Consignment;
+use App\Models\Vendor;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -63,8 +67,19 @@ class AuthController extends Controller
 
     public function dashboard()
     {
+        $salesCount = Sale::count();
+        $vendorsCount = Vendor::count();
+        $vehiclesCount = Vehicle::count();
+        $consignmentsCount = Consignment::count();
+
         return Inertia::render('Dashboard', [
             'user' => Auth::user(),
+            'statistics' => [
+                'sales' => $salesCount,
+                'vendors' => $vendorsCount,
+                'vehicles' => $vehiclesCount,
+                'consignments' => $consignmentsCount,
+            ],
         ]);
     }
 }
