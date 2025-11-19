@@ -10,8 +10,8 @@
       </div>
       <select
         :id="id"
-        :value="modelValue"
-        @change="$emit('update:modelValue', $event.target.value)"
+        :value="stringValue(modelValue)"
+        @change="onChange"
         :required="required"
         :disabled="disabled"
         :class="[
@@ -24,8 +24,8 @@
         <option v-if="placeholder" value="">{{ placeholder }}</option>
         <option
           v-for="option in options"
-          :key="option.value"
-          :value="option.value"
+          :key="option.value + '-' + option.label"
+          :value="String(option.value)"
         >
           {{ option.label }}
         </option>
@@ -43,7 +43,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref, watch } from 'vue'
+
+const props = defineProps({
   id: {
     type: String,
     required: true,
@@ -53,7 +55,7 @@ defineProps({
     default: '',
   },
   modelValue: {
-    type: [String, Number],
+    type: [String, Number, null],
     default: '',
   },
   options: {
@@ -82,7 +84,49 @@ defineProps({
   },
 })
 
-defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'change', 'add-new'])
+
+function stringValue(val) {
+  if (val === null || val === undefined) return ''
+  return String(val)
+}
+
+const previousValue = ref(props.modelValue || '')
+
+watch(() => props.modelValue, (newVal) => {
+  if (newVal && String(newVal).startsWith('add_new_')) {
+    return 
+  }
+  previousValue.value = newVal || ''
+})
+
+function onChange(event) {
+  const selectedString = event.target.value
+
+  if (selectedString === '') {
+    emit('update:modelValue', '')
+    emit('change', '')
+    return
+  }
+
+  if (selectedString.startsWith('add_new_')) {
+    event.target.value = stringValue(previousValue.value)
+    emit('add-new', selectedString.replace('add_new_', ''))
+    return
+  }
+
+  const found = props.options.find(opt => String(opt.value) === selectedString)
+
+  if (found !== undefined) {
+    previousValue.value = found.value
+    emit('update:modelValue', found.value)
+    emit('change', found.value)
+  } else {
+    previousValue.value = selectedString
+    emit('update:modelValue', selectedString)
+    emit('change', selectedString)
+  }
+}
 </script>
 
 <style scoped>
@@ -93,4 +137,3 @@ defineEmits(['update:modelValue'])
   opacity: 0;
 }
 </style>
-

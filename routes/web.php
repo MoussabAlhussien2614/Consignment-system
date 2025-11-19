@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\InvoiceController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VendorController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,18 +26,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
     Route::resource('vendors', VendorController::class);
-    // Vehicles
+    
     Route::resource('vehicles', VehicleController::class);
-    // Categories
+    
     Route::resource('categories', CategoryController::class);
-    // Consignments
+    
     Route::resource('consignments', ConsignmentController::class);
+    
+    Route::resource('sales', SaleController::class);
+    
+    Route::get('consignments/{consignment}/receipt', [ConsignmentController::class, 'receipt'])->name('consignment.receipt');
+
+   
 });
 
-
-
-
-Route::middleware('auth')->prefix("invoices")->group(function () {
+Route::middleware('auth')->prefix('invoices')->group(function () {
     Route::get('/', [InvoiceController::class, 'index'])->name('invoices');
 
 });

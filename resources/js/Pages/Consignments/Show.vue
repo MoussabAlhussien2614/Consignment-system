@@ -14,12 +14,21 @@
             <h1 class="text-3xl font-bold text-gray-900">{{ consignment.reference_no }}</h1>
             <p class="text-gray-600 mt-1">Consignment Details</p>
           </div>
-          <Link
-            :href="route('consignments.edit', { id: consignment.id })"
-            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            Edit
-          </Link>
+          <div class="flex gap-2">
+            <a
+              :href="route('consignment.receipt', { id: consignment.id })"
+              target="_blank"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Download Receipt
+            </a>
+            <Link
+              :href="route('consignment.edit', { id: consignment.id })"
+              class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              Edit
+            </Link>
+          </div>
         </div>
 
         <!-- Details Card -->
