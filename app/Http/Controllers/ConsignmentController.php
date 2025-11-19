@@ -128,14 +128,26 @@ class ConsignmentController extends Controller
             ->with('success', 'Consignment deleted successfully.');
     }
 
-    public function receipt(Sale $sale)
+    public function receipt(Consignment $consignment)
     {
-        $sale->load(['item.consignment.vendor', 'item.consignment.vehicle', 'item.category']);
+     
+        $consignment->load(['vendor', 'vehicle', 'items.category']);
+
+        $items = $consignment->items;
+
+        $summary = [
+            'total_quantity' => $items->sum('quantity'),
+            'total_value' => $items->sum(fn ($item) => (float) $item->unit_price * $item->quantity),
+            'total_extra_expenses' => $items->sum(fn ($item) => (float) ($item->extra_expences ?? 0)),
+            'total_commission' => $items->sum(fn ($item) => ((float) ($item->commission_rate ?? 0) / 100) * (float) $item->unit_price * $item->quantity),
+        ];
 
         $pdf = Dompdf::loadView('pdfs.receipt', [
-            'sale' => $sale,
+            'consignment' => $consignment,
+            'summary' => $summary,
         ])->setPaper('a4', 'portrait');
 
-        return $pdf->download("receipt-{$sale->id}.pdf");
+        return $pdf->download("receipt-{$consignment->id}.pdf");
+    
     }
 }

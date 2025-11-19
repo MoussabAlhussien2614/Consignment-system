@@ -41,7 +41,7 @@ export function route(name, params = {}) {
     'sales.store': '/sales',
     'sales.update': '/sales/:sale',
     'sales.destroy': '/sales/:sale',
-    'consignment.receipt': '/consignment/:consignment/receipt',
+    'consignments.receipt': '/consignments/:consignment/receipt',
     'vehicles.invoice': '/vehicles/:vehicle/invoice',
   }
 
