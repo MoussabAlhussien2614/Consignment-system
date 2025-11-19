@@ -3,16 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vendor;
+use App\Services\InvoiceService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use stdClass;
-use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class InvoiceController extends Controller
 {
+    public function __construct(private InvoiceService $invoiceService)
+    {
+    }
     public function index(Request $request){
         $vendors = Vendor::orderBy('name')->get(['id', 'name']);
-        $vendor = Vendor::find($request->vendor_id);
+        dump($request->vendor_id);
+        if($request->vendor_id != null){
+            $vendor = Vendor::find($request->vendor_id);
+            $invoices = $this->invoiceService->generateInvoices($vendor,$request->from_date,$request->to_date);
+            dd($invoices);
+        }
+
         return Inertia::render("Invoices/Main",[
             "vendors" => $vendors,
             "data" => [

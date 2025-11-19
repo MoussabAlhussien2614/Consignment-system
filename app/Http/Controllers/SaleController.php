@@ -56,7 +56,9 @@ class SaleController extends Controller
 
     public function store(StoreSaleRequest $request)
     {
-        Sale::create($request->validated());
+        Sale::create($request->validated() + [
+            "extra_expenses" => 0
+        ]);
 
         return redirect()->route('sales.index')
             ->with('success', 'Sale created successfully.');

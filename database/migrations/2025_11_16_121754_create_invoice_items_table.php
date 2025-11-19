@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
+            $table->string("product_name");
+            $table->decimal("price",15,2);
+            $table->unsignedInteger("commission");
+            $table->unsignedInteger("quantity");
+            $table->decimal("extra_expenses",15,2);
+            $table->foreignId("invoice_id")->constrained("invoices")->onDelete("cascade");
+            $table->timestamp("time_sold");
             $table->timestamps();
+
         });
     }
 
