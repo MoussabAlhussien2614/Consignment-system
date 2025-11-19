@@ -52,17 +52,13 @@ const columns = [
     label: 'Item Name',
   },
   {
-    key: 'Item.sku',
+    key: 'item.sku',
     label: 'SKU',
     defaultValue: '-',
   },
   {
     key: 'item.consignment.reference_no',
     label: 'Consignment',
-  },
-  {
-    key: 'quantity',
-    label: 'Quantity',
   },
   {
     key: 'quantity',

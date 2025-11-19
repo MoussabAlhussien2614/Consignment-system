@@ -1,6 +1,5 @@
 *.log
 .DS_Store
-.cursor
 .env
 .env.backup
 .env.production
@@ -11,6 +10,7 @@
 /.nova
 /.phpunit.cache
 /.vscode
+/.cursor
 /.zed
 /auth.json
 /node_modules
