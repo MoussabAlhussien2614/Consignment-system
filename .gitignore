@@ -10,7 +10,7 @@
 /.nova
 /.phpunit.cache
 /.vscode
-/.cursor
+.cursor/
 /.zed
 /auth.json
 /node_modules
