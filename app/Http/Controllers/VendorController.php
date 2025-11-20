@@ -41,6 +41,15 @@ class VendorController extends Controller
     {
         $vendor = Vendor::create($request->validated());
 
+        
+        return redirect()->route('vendors.index')
+            ->with('success', 'Vendor created successfully.');
+    }
+
+    public function storeQuick(StoreVendorRequest $request)
+    {
+        $vendor = Vendor::create($request->validated());
+
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json($vendor, 201);
         }

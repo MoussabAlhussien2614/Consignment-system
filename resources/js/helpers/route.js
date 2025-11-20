@@ -43,6 +43,8 @@ export function route(name, params = {}) {
     'sales.destroy': '/sales/:sale',
     'consignments.receipt': '/consignments/:consignment/receipt',
     'vehicles.invoice': '/vehicles/:vehicle/invoice',
+    'vendors.quick-store': '/vendors/quick-store',
+    'vehicles.quick-store': '/vehicles/quick-store',
   }
 
   let url = routes[name] || '/'

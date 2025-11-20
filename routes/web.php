@@ -34,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('consignments', ConsignmentController::class);
     
     Route::resource('sales', SaleController::class);
+
+    Route::post('vendors/quick-store', [VendorController::class, 'storeQuick'])->name('vendors.quick-store');
+    Route::post('vehicles/quick-store', [VehicleController::class, 'storeQuick'])->name('vehicles.quick-store');
     
     Route::get('consignments/{consignment}/receipt', [ConsignmentController::class, 'receipt'])->name('consignments.receipt');
 

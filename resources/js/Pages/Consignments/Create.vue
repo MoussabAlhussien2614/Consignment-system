@@ -141,7 +141,7 @@
         :is-open="vendorModalOpen"
         title="Add New Vendor"
         :fields="vendorFields"
-        :store-url="route('vendors.store')"
+        :store-url="route('vendors.quick-store')"
         @close="vendorModalOpen = false"
         @created="handleVendorCreated"
       />
@@ -150,7 +150,7 @@
         :is-open="vehicleModalOpen"
         title="Add New Vehicle"
         :fields="vehicleFields"
-        :store-url="route('vehicles.store')"
+        :store-url="route('vehicles.quick-store')"
         :initial-data="{ vendor_id: form.vendor_id || '' }"
         @close="vehicleModalOpen = false"
         @created="handleVehicleCreated"
