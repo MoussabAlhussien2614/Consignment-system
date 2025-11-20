@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\Vendor;
 use App\Services\InvoiceService;
 use Illuminate\Http\Request;
@@ -14,11 +15,10 @@ class InvoiceController extends Controller
     }
     public function index(Request $request){
         $vendors = Vendor::orderBy('name')->get(['id', 'name']);
-        dump($request->vendor_id);
         if($request->vendor_id != null){
             $vendor = Vendor::find($request->vendor_id);
             $invoices = $this->invoiceService->generateInvoices($vendor,$request->from_date,$request->to_date);
-            dd($invoices);
+            $invoices = Invoice::query()->findMany($invoices);
         }
 
         return Inertia::render("Invoices/Main",[
