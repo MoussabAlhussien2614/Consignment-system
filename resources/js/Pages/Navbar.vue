@@ -22,6 +22,9 @@
             <Link :href="route('consignments.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors whitespace-nowrap">
               Consignments
             </Link>
+            <Link :href="route('consignment-items.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors whitespace-nowrap">
+              ConsignmentItems
+            </Link>
             <Link :href="route('vendors.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors whitespace-nowrap">
               Vendors
             </Link>
@@ -69,6 +72,9 @@
           </Link>
           <Link :href="route('consignments.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
             Consignments
+          </Link>
+          <Link :href="route('consignment-items.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+            ConsignmentItems
           </Link>
           <Link :href="route('vendors.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
             Vendors

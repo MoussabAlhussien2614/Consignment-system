@@ -16,6 +16,7 @@ class ConsignmentItem extends Model
         'sku',
         'category_id',
         'quantity',
+        'quantity_available',
         'unit_price',
         'extra_expences',
         'commission_rate',

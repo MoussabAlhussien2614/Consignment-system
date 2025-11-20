@@ -47,6 +47,7 @@ export function route(name, params = {}) {
     'vehicles.invoice': '/vehicles/:vehicle/invoice',
     'vendors.quick-store': '/vendors/quick-store',
     'vehicles.quick-store': '/vehicles/quick-store',
+    'consignment-items.index': '/consignment-items',
   }
 
   let url = routes[name] || '/'
