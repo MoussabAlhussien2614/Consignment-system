@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ConsignmentItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class SaleFactory extends Factory
     public function definition(): array
     {
         return [
-            
+            'item_id'  => ConsignmentItem::factory(),
+            'quantity' => rand(1, 5),
+            'price'    => $this->faker->randomFloat(2, 10, 200),
         ];
     }
 }
