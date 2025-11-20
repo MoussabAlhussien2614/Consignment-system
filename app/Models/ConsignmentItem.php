@@ -39,4 +39,5 @@ class ConsignmentItem extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
 }

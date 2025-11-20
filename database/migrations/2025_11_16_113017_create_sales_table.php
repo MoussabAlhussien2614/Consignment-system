@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId("item_id")->constrained("consignment_items")->onDelete("cascade");
             $table->unsignedInteger("quantity");
             $table->decimal("price",15,2);
+            $table->decimal("extra_expenses",15,2);
             $table->softDeletes();
             $table->timestamps();
         });

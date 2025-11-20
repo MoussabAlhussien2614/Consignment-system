@@ -14,9 +14,6 @@
               >
                 {{ column.label }}
               </th>
-              <th v-if="withActions" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -37,33 +34,14 @@
                 <div v-else-if="column.format === 'currency'" class="text-sm font-medium text-gray-900">
                   ${{ formatCurrency(getNestedValue(row, column.key)) }}
                 </div>
+                <div v-else-if="column.format === 'rate'" class="text-sm font-medium text-gray-900">
+                  %{{ formatCurrency(getNestedValue(row, column.key)) }}
+                </div>
                 <div v-else :class="column.class || 'text-sm text-gray-900'">
                   {{ getNestedValue(row, column.key) || column.defaultValue || '-' }}
                 </div>
               </td>
-              <td v-if="withActions"  class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <div class="flex justify-end gap-2">
-                  <Link
-                    :href="getRoute('invoices.show', getRowId(row))"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors text-sm font-medium"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    View
-                  </Link>
-                  <a
-                    :href="getRoute('invoices.print', getRowId(row))"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-100 text-orange-800 rounded-lg hover:bg-orange-200 transition-colors text-sm font-medium"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="#FFA500" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                    </svg>
-                    Print
-                  </a>
-                </div>
-              </td>
+              
             </tr>
             <tr v-if="data.length==0&&!venderIsSelected">
               <td :colspan="columns.length + (showActions ? 1 : 0)" class="px-6 py-4 text-center text-gray-500">
@@ -82,38 +60,36 @@
 </template>
 
 <script setup>
-  import { Link } from "@inertiajs/vue3";
-import { route } from "../../helpers/route"
+  import { route } from "../../helpers/route"
   import { ref } from "vue"
   const venderIsSelected = ref(false);
+
+
+  
   const columns = [
     {
-      key:"vehicle.vendor.name",
-      label: "vendor_name",
-    },
-    {
-      key:"vehicle.plate_number",
-      label: "vehicle",
-    },
-    {
-      key:"total_sales",
-      label: "total_sales",
+      key:"price",
+      label: "price",
       format: "currency",
     },
     {
-      key:"commission_deduction",
-      label: "commission_deduction",
-      format: "currency",
+      key:"quantity",
+      label: "quantity",
     },
     {
       key:"extra_expenses",
       label: "extra_expenses",
       format: "currency",
     },
-     {
-      key:"net_amount_payable",
-      label: "total_payable",
-      format: "currency",
+    {
+      key:"commission",
+      label: "commission_rate",
+      format: "rate"
+    },
+  
+    {
+      key:"time_sold",
+      label: "sold_at",
     },
   ];
 
@@ -127,11 +103,7 @@ import { route } from "../../helpers/route"
       required: false,
       default: "id"
     },
-    withActions:{
-      type: Boolean,
-      required: false,
-      default:true,
-    },
+ 
   })
 
 
@@ -143,14 +115,6 @@ import { route } from "../../helpers/route"
   function getRowKey(row, index) {
     return getNestedValue(row, props.rowKey) || index
   } 
-
-function getRowId(row) {
-  return getNestedValue(row, props.rowKey)
-}
-
-  function getRoute(routeName, id) {
-    return route(routeName, { id})
-  }
 
   function formatCurrency(value) {
     return parseFloat(value || 0).toFixed(2)

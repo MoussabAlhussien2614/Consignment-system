@@ -13,6 +13,8 @@ export function route(name, params = {}) {
     'vendors.update': '/vendors/:vendor',
     'vendors.destroy': '/vendors/:vendor',
     'invoices': '/invoices',
+    'invoices.show': '/invoices/:invoice',
+    'invoices.print': '/invoices/:invoice/print',
     'vehicles.index': '/vehicles',
     'vehicles.create': '/vehicles/create',
     'vehicles.show': '/vehicles/:vehicle',
