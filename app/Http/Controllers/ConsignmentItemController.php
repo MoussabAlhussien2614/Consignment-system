@@ -47,8 +47,6 @@ class ConsignmentItemController extends Controller
 
         return inertia('ConsignmentItems/Index', [
             'items' => $items,
-            'vendors' => Vendor::select('id', 'name')->get(),
-            'vehicles' => Vehicle::select('id', 'plate_no')->get(),
             'filters' => $request->all(),
         ]);
     }
