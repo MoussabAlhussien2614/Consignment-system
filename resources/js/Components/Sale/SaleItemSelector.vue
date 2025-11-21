@@ -18,7 +18,7 @@
 
             <select v-model="filters.vehicle_id" class="border rounded px-3 py-2">
               <option value="">All Vehicles</option>
-              <option v-for="v in vehicles" :key="v.id" :value="v.id">{{ v.plate_number }}</option>
+              <option v-for="v in vehicleOptions" :key="v.id" :value="v.id">{{ v.plate_number }}</option>
             </select>
 
             <input v-model="filters.search" placeholder="Search name or SKU" class="border rounded px-3 py-2 flex-1" />
@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   items: { type: Array, required: true },
@@ -108,6 +108,29 @@ const filteredItems = computed(() => {
     list = list.filter(i => (i.name || '').toLowerCase().includes(s) || (i.sku || '').toLowerCase().includes(s))
   }
   return list
+})
+
+const vehicleOptions = computed(() => {
+  const map = new Map()
+  const list = props.items || []
+  for (const i of list) {
+    const v = i.consignment?.vehicle
+    const vendor = i.consignment?.vendor
+    if (!v) continue
+    if (filters.value.vendor_id) {
+      if (!vendor || vendor.id != filters.value.vendor_id) continue
+    }
+    if (!map.has(v.id)) map.set(v.id, v)
+  }
+  return Array.from(map.values()).sort((a, b) => (a.plate_number || '').localeCompare(b.plate_number || ''))
+})
+
+watch(() => filters.value.vendor_id, (val) => {
+  if (!val) return
+  const cur = filters.value.vehicle_id
+  if (cur && !vehicleOptions.value.find(v => v.id == cur)) {
+    filters.value.vehicle_id = ''
+  }
 })
 
 function select(item) {
