@@ -20,6 +20,7 @@ class VehicleFactory extends Factory
         return [
             'vendor_id'    => Vendor::factory(),
             'plate_number' => strtoupper($this->faker->bothify('???-####')),
+            'reference_name' => fake()->randomElement(["red","green","black"]) . " ". fake()->randomElement(["toyota","mitsubishi","hyundai"]),
             'driver_name'  => $this->faker->name(),
             'driver_phone' => $this->faker->phoneNumber(),
             'vehicle_type' => $this->faker->randomElement(['car','truck','van','other']),

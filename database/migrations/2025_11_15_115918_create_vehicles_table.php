@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vendor_id')->constrained()->cascadeOnDelete();
+            $table->string('reference_name');
             $table->string('plate_number');
             $table->string('driver_name')->nullable();
             $table->string('driver_phone')->nullable();
