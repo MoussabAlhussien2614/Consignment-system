@@ -35,7 +35,7 @@ class InvoiceService{
             ->when($from_date!=null, function($query) use ($from_date){
                 return $query->where("created_at",">",$from_date);
             })
-            ->when($from_date!=null, function($query) use ($to_date){
+            ->when($to_date!=null, function($query) use ($to_date){
                 return $query->where("created_at","<",$to_date);
             })
             ->with("item")

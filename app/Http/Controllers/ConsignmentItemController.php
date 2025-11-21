@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateConsignmentItemRequest;
+use App\Models\Category;
 use App\Models\ConsignmentItem;
 use App\Models\Vehicle;
 use App\Models\Vendor;
@@ -52,35 +54,49 @@ class ConsignmentItemController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
+    
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(ConsignmentItem $consignmentItem)
     {
-        //
+        
+        return inertia('ConsignmentItems/Show', [
+            'consignment_item' => $consignmentItem->load("category"),
+        ]);
+    }
+
+    
+    /**
+     * Display the specified resource.
+     */
+    public function edit(ConsignmentItem $consignmentItem)
+    {
+        
+        return inertia('ConsignmentItems/Edit', [
+            'consignment_item' => $consignmentItem->load("category"),
+            'categories' => Category::get(),
+
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateConsignmentItemRequest $request, ConsignmentItem $consignmentItem)
     {
-        //
+        $consignmentItem->update($request->validated());
+        
+        return redirect()->route('consignment-items.index')
+            ->with('success', 'Item updated successfully.');
     }
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(ConsignmentItem $consignmentItem)
     {
-        //
+        $consignmentItem->delete();
+        return redirect()->route('consignment-items.index')
+            ->with('success', 'Item deleted successfully.');
     }
 }

@@ -47,7 +47,7 @@
               <td v-if="withActions"  class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex justify-end gap-2">
                   <Link
-                    :href="getRoute('invoices.show', getRowId(row))"
+                    :href="getRoute('consignment-items.show', getRowId(row))"
                     class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors text-sm font-medium"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,15 +56,24 @@
                     </svg>
                     View
                   </Link>
-                  <a
-                    :href="getRoute('invoices.print', getRowId(row))"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-100 text-orange-800 rounded-lg hover:bg-orange-200 transition-colors text-sm font-medium"
+                  <Link
+                    :href="getRoute('consignment-items.edit', getRowId(row))"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
                   >
-                    <svg class="w-4 h-4" fill="none" stroke="#FFA500" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                    Print
-                  </a>
+                    Edit
+                  </Link>
+                  <button
+                    @click="handleDelete(row)"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -108,7 +117,7 @@
 </template>
 
 <script setup>
-  import { Link } from "@inertiajs/vue3";
+  import { Link, router } from "@inertiajs/vue3";
 import { route } from "../../helpers/route"
 
   const columns = [
@@ -173,7 +182,14 @@ import { route } from "../../helpers/route"
   })
 
 
-
+  const handleDelete = (row) => {
+    const id = getRowId(row)
+    if (confirm('Are you sure you want to delete this item?')) {
+      router.delete(route("consignment-items.destroy", { id }), {
+        preserveScroll: true,
+      })
+    }
+  }
   function getNestedValue(obj, path) {
     return path.split('.').reduce((current, prop) => current?.[prop], obj)
   }

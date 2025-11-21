@@ -54,7 +54,6 @@
 
 <script setup>
 import Navbar  from '../Navbar.vue'
-import FormSelect from '../../Components/FormSelect.vue'
 import ConsignmentItemTable from './ConsignmentItemTable.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
