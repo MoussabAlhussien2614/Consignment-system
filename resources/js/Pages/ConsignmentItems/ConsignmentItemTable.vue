@@ -37,6 +37,9 @@
                 <div v-else-if="column.format === 'currency'" class="text-sm font-medium text-gray-900">
                   ${{ formatCurrency(getNestedValue(row, column.key)) }}
                 </div>
+                <div v-else-if="column.format === 'rate'" class="text-sm font-medium text-gray-900">
+                  %{{ formatCurrency(getNestedValue(row, column.key)) }}
+                </div>
                 <div v-else :class="column.class || 'text-sm text-gray-900'">
                   {{ getNestedValue(row, column.key) || column.defaultValue || '-' }}
                 </div>
@@ -44,7 +47,7 @@
               <td v-if="withActions"  class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex justify-end gap-2">
                   <Link
-                    :href="getRoute('invoices.show', getRowId(row))"
+                    :href="getRoute('consignment-items.show', getRowId(row))"
                     class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors text-sm font-medium"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,15 +56,24 @@
                     </svg>
                     View
                   </Link>
-                  <a
-                    :href="getRoute('invoices.print', getRowId(row))"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-100 text-orange-800 rounded-lg hover:bg-orange-200 transition-colors text-sm font-medium"
+                  <Link
+                    :href="getRoute('consignment-items.edit', getRowId(row))"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
                   >
-                    <svg class="w-4 h-4" fill="none" stroke="#FFA500" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                    Print
-                  </a>
+                    Edit
+                  </Link>
+                  <button
+                    @click="handleDelete(row)"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -78,11 +90,34 @@
           </tbody> 
         </table>
       </div> 
+      
+      <div v-if="pagination && pagination.links && pagination.links.length > 3" class="bg-gray-50 px-4 py-3 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-gray-700">
+            Showing {{ pagination.from }} to {{ pagination.to }} of {{ pagination.total }} results
+          </div>
+          <div class="flex gap-2">
+            <Link
+              v-for="link in pagination.links"
+              :key="link.label"
+              :href="link.url || '#'"
+              :class="[
+                'px-3 py-2 text-sm rounded-lg',
+                link.active
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
+                !link.url ? 'opacity-50 cursor-not-allowed' : ''
+              ]"
+              v-html="link.label"
+            />
+          </div>
+        </div>
+      </div>
   </div>
 </template>
 
 <script setup>
-  import { Link } from "@inertiajs/vue3";
+  import { Link, router } from "@inertiajs/vue3";
 import { route } from "../../helpers/route"
 
   const columns = [
@@ -90,10 +125,7 @@ import { route } from "../../helpers/route"
       key:"consignment.reference_no",
       label: "consignment_ref_no",
     },
-    {
-      key:"name",
-      label: "name",
-    },
+  
     {
       key:"sku",
       label: "sku",
@@ -101,6 +133,10 @@ import { route } from "../../helpers/route"
     {
       key:"category.name",
       label: "category",
+    },
+    {
+      key:"name",
+      label: "name",
     },
     {
       key:"quantity",
@@ -111,22 +147,26 @@ import { route } from "../../helpers/route"
       label: "unit_price",
       format: "currency",
     },
-    {
-      key:"extra_expences",
-      label: "extra_expences",
-      format: "currency",
-    },
-    {
-      key:"commission_rate",
-      label: "commission_rate",
-      format: "rate",
-    },
+    // {
+    //   key:"extra_expences",
+    //   label: "extra_expences",
+    //   format: "currency",
+    // },
+    // {
+    //   key:"commission_rate",
+    //   label: "commission_rate",
+    //   format: "rate",
+    // },
     
   ];
 
   const props = defineProps({
     data: {
       type: Array,
+      required: true
+    },
+    pagination: {
+      type: Object,
       required: true
     },
     rowKey: {
@@ -142,7 +182,14 @@ import { route } from "../../helpers/route"
   })
 
 
-
+  const handleDelete = (row) => {
+    const id = getRowId(row)
+    if (confirm('Are you sure you want to delete this item?')) {
+      router.delete(route("consignment-items.destroy", { id }), {
+        preserveScroll: true,
+      })
+    }
+  }
   function getNestedValue(obj, path) {
     return path.split('.').reduce((current, prop) => current?.[prop], obj)
   }

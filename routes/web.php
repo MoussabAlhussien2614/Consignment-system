@@ -40,7 +40,12 @@ Route::middleware('auth')->group(function () {
     Route::post('vehicles/quick-store', [VehicleController::class, 'storeQuick'])->name('vehicles.quick-store');
 
 
-    Route::get('consignment-items', [ConsignmentItemController::class, 'index']);
+
+    Route::get('consignment-items', [ConsignmentItemController::class, 'index'])->name('consignment-items.index');
+    Route::get('consignment-items/{consignmentItem}', [ConsignmentItemController::class, 'show']);
+    Route::put('consignment-items/{consignmentItem}', [ConsignmentItemController::class, 'update']);
+    Route::get('consignment-items/{consignmentItem}/edit', [ConsignmentItemController::class, 'edit']);
+    Route::delete('consignment-items/{consignmentItem}', [ConsignmentItemController::class, 'destroy']);
 
     
     Route::get('consignments/{consignment}/receipt', [ConsignmentController::class, 'receipt'])->name('consignments.receipt');
