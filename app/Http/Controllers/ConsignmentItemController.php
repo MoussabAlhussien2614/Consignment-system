@@ -41,7 +41,7 @@ class ConsignmentItemController extends Controller
             $query->where('quantity_available', '>', 0);
         }
 
-        $items = $query->orderBy('id', 'desc')->get();
+        $items = $query->orderBy('id', 'desc')->paginate(10);
 
         return inertia('ConsignmentItems/Index', [
             'items' => $items,

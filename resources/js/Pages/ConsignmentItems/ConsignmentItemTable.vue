@@ -37,6 +37,9 @@
                 <div v-else-if="column.format === 'currency'" class="text-sm font-medium text-gray-900">
                   ${{ formatCurrency(getNestedValue(row, column.key)) }}
                 </div>
+                <div v-else-if="column.format === 'rate'" class="text-sm font-medium text-gray-900">
+                  %{{ formatCurrency(getNestedValue(row, column.key)) }}
+                </div>
                 <div v-else :class="column.class || 'text-sm text-gray-900'">
                   {{ getNestedValue(row, column.key) || column.defaultValue || '-' }}
                 </div>
@@ -78,6 +81,29 @@
           </tbody> 
         </table>
       </div> 
+      
+      <div v-if="pagination && pagination.links && pagination.links.length > 3" class="bg-gray-50 px-4 py-3 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-gray-700">
+            Showing {{ pagination.from }} to {{ pagination.to }} of {{ pagination.total }} results
+          </div>
+          <div class="flex gap-2">
+            <Link
+              v-for="link in pagination.links"
+              :key="link.label"
+              :href="link.url || '#'"
+              :class="[
+                'px-3 py-2 text-sm rounded-lg',
+                link.active
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
+                !link.url ? 'opacity-50 cursor-not-allowed' : ''
+              ]"
+              v-html="link.label"
+            />
+          </div>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -90,10 +116,7 @@ import { route } from "../../helpers/route"
       key:"consignment.reference_no",
       label: "consignment_ref_no",
     },
-    {
-      key:"name",
-      label: "name",
-    },
+  
     {
       key:"sku",
       label: "sku",
@@ -101,6 +124,10 @@ import { route } from "../../helpers/route"
     {
       key:"category.name",
       label: "category",
+    },
+    {
+      key:"name",
+      label: "name",
     },
     {
       key:"quantity",
@@ -111,22 +138,26 @@ import { route } from "../../helpers/route"
       label: "unit_price",
       format: "currency",
     },
-    {
-      key:"extra_expences",
-      label: "extra_expences",
-      format: "currency",
-    },
-    {
-      key:"commission_rate",
-      label: "commission_rate",
-      format: "rate",
-    },
+    // {
+    //   key:"extra_expences",
+    //   label: "extra_expences",
+    //   format: "currency",
+    // },
+    // {
+    //   key:"commission_rate",
+    //   label: "commission_rate",
+    //   format: "rate",
+    // },
     
   ];
 
   const props = defineProps({
     data: {
       type: Array,
+      required: true
+    },
+    pagination: {
+      type: Object,
       required: true
     },
     rowKey: {

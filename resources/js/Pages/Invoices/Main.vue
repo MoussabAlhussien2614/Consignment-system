@@ -4,7 +4,7 @@
       <div class="space-y-6">
         <div>
           <h1 class="text-3xl font-bold text-gray-900">Invoices</h1>
-          <p class="text-gray-600 mt-1">Generate Invoices for your Vendors</p>
+          <p class="text-gray-600 mt-1">Generate invoices for your vendors</p>
         </div>
           <div class="flex items-center gap-2">
             <div class="w-full">
@@ -15,7 +15,6 @@
               v-model="form.vendor_id"
               placeholder="Select a vendor"
               :error="form.errors.vendor_id"
-              required
               />
             </div>
             <div class="w-full">
@@ -57,7 +56,7 @@ import Navbar  from '../Navbar.vue'
 import FormSelect from '../../Components/FormSelect.vue'
 import FormInput from '../../Components/FormInput.vue'
 import InvoiceTable from './InvoiceTable.vue';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { route } from '../../helpers/route';
 
