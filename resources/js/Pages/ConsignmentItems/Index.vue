@@ -53,9 +53,10 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import Navbar  from '../Navbar.vue'
 import ConsignmentItemTable from './ConsignmentItemTable.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, router, useForm } from '@inertiajs/vue3';
 
 defineProps({
   items:{
@@ -67,10 +68,16 @@ defineProps({
 const form = useForm({
   view_mode: "",
 })
-let searchQuery = ""
-const handleSearch = () => {
 
+let searchQuery = ref("")
+
+function handleSearch() {
+    router.get("consignment-items", { search: searchQuery.value }, {
+      preserveState: true,
+      preserveScroll: true,
+    })
 }
+
 </script>
 
 <style scoped>
