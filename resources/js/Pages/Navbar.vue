@@ -23,7 +23,7 @@
               Consignments
             </Link>
             <Link :href="route('consignment-items.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors whitespace-nowrap">
-              ConsignmentItems
+              Consignment Items
             </Link>
             <Link :href="route('vendors.index')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors whitespace-nowrap">
               Vendors
@@ -74,21 +74,21 @@
             Consignments
           </Link>
           <Link :href="route('consignment-items.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
-            ConsignmentItems
+            Consignment Items
           </Link>
           <Link :href="route('vendors.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
             Vendors
           </Link>
-          <Link :href="route('vehicles.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+          <!-- <Link :href="route('vehicles.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
             Vehicles
-          </Link>
+          </Link> -->
           <Link :href="route('invoices')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
             Invoices
           </Link>
-          <Link :href="route('categories.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+          <!-- <Link :href="route('categories.index')" @click="mobileMenuOpen = false" class="block px-4 py-2 font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
             Categories
-          </Link>
-        </nav>
+          </Link> -->
+        </nav> 
       </div>
     </header>
     <slot></slot>

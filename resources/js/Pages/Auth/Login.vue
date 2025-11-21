@@ -116,15 +116,7 @@
           <span v-else>Sign In</span>
         </button>
 
-        <!-- Register Link -->
-        <div class="text-center pt-4">
-          <p class="text-sm text-gray-600">
-            Don't have an account?
-            <Link :href="route('register')" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-              Sign up
-            </Link>
-          </p>
-        </div>
+     
       </form>
     </div>
   </GuestLayout>
