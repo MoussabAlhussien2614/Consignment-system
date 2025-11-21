@@ -6,8 +6,11 @@ use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\UpdateSaleRequest;
 use App\Models\ConsignmentItem;
 use App\Models\Sale;
+use App\Models\Vehicle;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
@@ -47,8 +50,13 @@ class SaleController extends Controller
             ->orderBy('name')
             ->get();
 
+        $vendors = Vendor::orderBy('name')->get();
+        $vehicles = Vehicle::orderBy('plate_number')->get();
+
         return Inertia::render('Sales/Create', [
             'items' => $items,
+            'vendors' => $vendors,
+            'vehicles' => $vehicles,
         ]);
     }
 
@@ -56,9 +64,24 @@ class SaleController extends Controller
 
     public function store(StoreSaleRequest $request)
     {
-        Sale::create($request->validated() + [
-            "extra_expenses" => 0
-        ]);
+        $data = $request->validated();
+
+        DB::transaction(function () use ($data) {
+            $item = ConsignmentItem::lockForUpdate()->findOrFail($data['item_id']);
+
+            // double-check availability
+            if (($item->quantity_available ?? 0) < $data['quantity']) {
+                throw new \Exception('Insufficient available quantity for this item.');
+            }
+
+            $sale = Sale::create($data + [
+                'extra_expenses' => $data['extra_expenses'] ?? 0,
+            ]);
+
+            $item->quantity_available = ($item->quantity_available ?? 0) - $data['quantity'];
+            if ($item->quantity_available < 0) $item->quantity_available = 0;
+            $item->save();
+        });
 
         return redirect()->route('sales.index')
             ->with('success', 'Sale created successfully.');
@@ -80,15 +103,54 @@ class SaleController extends Controller
             ->orderBy('name')
             ->get();
 
+        $vendors =Vendor::orderBy('name')->get();
+        $vehicles = Vehicle::orderBy('plate_number')->get();
+
         return Inertia::render('Sales/Edit', [
             'sale' => $sale,
             'items' => $items,
+            'vendors' => $vendors,
+            'vehicles' => $vehicles,
         ]);
     }
 
     public function update(UpdateSaleRequest $request, Sale $sale)
     {
-        $sale->update($request->validated());
+        $data = $request->validated();
+
+        DB::transaction(function () use ($sale, $data) {
+            $oldItem = $sale->item()->lockForUpdate()->first();
+            $newItem = ConsignmentItem::lockForUpdate()->findOrFail($data['item_id']);
+
+            $oldQty = $sale->quantity;
+            $newQty = $data['quantity'];
+
+            if ($oldItem && $oldItem->id !== $newItem->id) {
+
+                $oldItem->quantity_available = ($oldItem->quantity_available ?? 0) + $oldQty;
+                $oldItem->save();
+
+                if (($newItem->quantity_available ?? 0) < $newQty) {
+                    throw new \Exception('Insufficient available quantity for selected item.');
+                }
+                $newItem->quantity_available = ($newItem->quantity_available ?? 0) - $newQty;
+                $newItem->save();
+            } else {
+
+                $diff = $newQty - $oldQty;
+                if ($diff > 0) {
+                    if (($newItem->quantity_available ?? 0) < $diff) {
+                        throw new \Exception('Insufficient available quantity for this item.');
+                    }
+                    $newItem->quantity_available = ($newItem->quantity_available ?? 0) - $diff;
+                } else if ($diff < 0) {
+                    $newItem->quantity_available = ($newItem->quantity_available ?? 0) + abs($diff);
+                }
+                $newItem->save();
+            }
+
+            $sale->update($data);
+        });
 
         return redirect()->route('sales.index')
             ->with('success', 'Sale updated successfully.');

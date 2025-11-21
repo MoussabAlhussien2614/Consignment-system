@@ -18,16 +18,19 @@ class ConsignmentItemFactory extends Factory
      */
     public function definition(): array
     {
+        $qty = rand(1, 50);
+
         return [
-            'consignment_id' => Consignment::factory(),
-            'name'           => $this->faker->words(2, true),
-            'sku'            => $this->faker->unique()->bothify('SKU-#####'),
-            'category_id'    => Category::factory(),
-            'quantity'       => rand(1, 50),
-            'unit_price'     => $this->faker->randomFloat(2, 5, 200),
-            'extra_expences' => $this->faker->randomFloat(2, 0, 50),
-            'commission_rate'=> rand(1, 20),
-            'notes'          => $this->faker->sentence(),
+            'consignment_id'     => Consignment::factory(),
+            'name'               => $this->faker->words(2, true),
+            'sku'                => $this->faker->unique()->bothify('SKU-#####'),
+            'category_id'        => Category::factory(),
+            'quantity'           => $qty,
+            'unit_price'         => $this->faker->randomFloat(2, 5, 200),
+            'extra_expences'     => $this->faker->randomFloat(2, 0, 50),
+            'commission_rate'    => rand(1, 20),
+            'notes'              => $this->faker->sentence(),
+            'quantity_available' => $qty, 
         ];
     }
 }

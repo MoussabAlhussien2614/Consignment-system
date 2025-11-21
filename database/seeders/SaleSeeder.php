@@ -23,12 +23,26 @@ class SaleSeeder extends Seeder
         }
 
         $items->each(function (ConsignmentItem $item) {
-            Sale::factory()
-                ->count(rand(0, 3))
-                ->state([
-                    'item_id' => $item->id,
-                ])
-                ->create();
+
+            $numSales = rand(0, 3);
+
+            for ($i = 0; $i < $numSales; $i++) {
+
+                if ($item->quantity_available <= 0) {
+                    break;
+                }
+
+                $maxQty = min(5, $item->quantity_available);
+                $saleQty = rand(1, $maxQty);
+
+                Sale::factory()->create([
+                    'item_id'  => $item->id,
+                    'quantity' => $saleQty,
+                ]);
+
+                $item->quantity_available -= $saleQty;
+                $item->save();
+            }
         });
     }
 }
