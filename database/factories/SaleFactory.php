@@ -21,6 +21,7 @@ class SaleFactory extends Factory
             'item_id'  => ConsignmentItem::factory(),
             'quantity' => rand(1, 5),
             'price'    => $this->faker->randomFloat(2, 10, 200),
+            'extra_expenses'    => $this->faker->randomFloat(2, 10, 20),
         ];
     }
 }
