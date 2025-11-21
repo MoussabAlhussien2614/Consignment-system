@@ -61,6 +61,7 @@ class ConsignmentController extends Controller
         $consignment = Consignment::create($validated);
 
         foreach ($items as $item) {
+            $item['quantity_available'] = $item['quantity'];
             $consignment->items()->create($item);
         }
 
@@ -113,6 +114,7 @@ class ConsignmentController extends Controller
 
         $consignment->items()->forceDelete();
         foreach ($items as $item) {
+            $item['quantity_available'] = $item['quantity'];
             $consignment->items()->create($item);
         }
 
